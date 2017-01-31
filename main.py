@@ -15,11 +15,57 @@
 # limitations under the License.
 #
 import webapp2
+import cgi
+
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-        self.response.write('Hello world!')
+
+        header = "<h1>User Signup</h1>"
+
+        user = """
+        <form action="/uservalidation" method="post">
+
+            <label>
+                Username: <input type="text" name="username"/>
+            </label>
+            <br>
+
+            <label>
+                Password: <input type="text" name="password"/>
+            <label>
+            <br>
+
+            <label>
+                Password Verification: <input type="text" name="password_verify"/>
+            </label>
+            <br>
+
+            <label>
+                Email (optional): <input type="text" name="email"/>
+            </label>
+            <br>
+
+            <input type=submit>
+        </form>
+        """
+
+        content = header + user
+
+        self.response.write(content)
+
+class uservalidation(webapp2.RequestHandler):
+
+    def post(self):
+        print(self)
+        user = self.request.get("username")
+        print(user)
+        if (not user) or (user.strip() == ""):
+            error = "Please Fill Out This Field"
+            self.redirect("/?error" + cgi.escape(error, quote=True))
+
 
 app = webapp2.WSGIApplication([
-    ('/', MainHandler)
+    ('/', MainHandler),
+    ('/uservalidation', uservalidation)
 ], debug=True)
